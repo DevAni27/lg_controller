@@ -1,4 +1,4 @@
-# demo_app
+# LG Controller
 
 A new Flutter project.
 
