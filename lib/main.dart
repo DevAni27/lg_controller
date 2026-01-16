@@ -1,6 +1,4 @@
 import 'package:demo_app/screens/first_page.dart';
-import 'package:demo_app/screens/home_page.dart';
-import 'package:demo_app/screens/setting_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
