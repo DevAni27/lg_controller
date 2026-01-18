@@ -127,7 +127,7 @@ class _SettingPageState extends State<SettingPage> {
                 
                 style: ElevatedButton.styleFrom(
                   backgroundColor:  const Color.fromARGB(255, 9, 152, 14),
-                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 60),
+                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 70),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))
                   
                 ),
