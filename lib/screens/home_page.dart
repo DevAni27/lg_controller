@@ -44,8 +44,19 @@ class _HomePageState extends State<HomePage> {
               ),
                            
             ),
-            SizedBox(height: 20,),
+            SizedBox(height: 30,),
 
+            Divider(
+              color: Colors.grey,
+              thickness: 1,
+              height: 20,
+            ),
+
+            SizedBox(height: 30,),
+
+            Text("Liquid Galaxy Services", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 20),),
+
+            SizedBox(height: 20,),
             //Clean logo
             ElevatedButton(
               onPressed: () {
@@ -62,7 +73,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Text("Clean Logo", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),),
                   SizedBox(width: 20),
-                  Icon(Icons.clear, size: 30, color: Colors.white,), // The icon
+                  Icon(Icons.delete, size: 30, color: Colors.white,), // The icon
                    
                 ],
               ),
