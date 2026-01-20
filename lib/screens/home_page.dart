@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import '../services/lg_service.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final LGService lgService;
+  const HomePage({super.key, required this.lgService});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -10,7 +12,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   
+  
 
+  void flyhome() async{
+    // add fly to home logic
+ 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +32,7 @@ class _HomePageState extends State<HomePage> {
             //Fly to home button
             ElevatedButton(
               onPressed: () {
-                // add function
+                flyhome();
               },
               
               style: ElevatedButton.styleFrom(
