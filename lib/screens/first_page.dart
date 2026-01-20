@@ -1,6 +1,7 @@
 import 'package:demo_app/screens/home_page.dart';
 import 'package:demo_app/screens/setting_page.dart';
 import 'package:flutter/material.dart';
+import '../services/lg_service.dart';
 
 class FirstPage extends StatefulWidget {
   const FirstPage({super.key});
@@ -13,18 +14,26 @@ class _FirstPageState extends State<FirstPage> {
   
   int selectedIndex = 0;
 
-  void navigationIndex(int index){
-    setState(() {
-      selectedIndex = index;
-    });
+  final LGService lgService = LGService();
+
+  late final List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // ✅ Pass the SAME instance to both screens
+    _pages = [
+      HomePage(lgService: lgService),
+      SettingPage(lgService: lgService),
+    ];
   }
 
-  final List _pages = [
-
-    HomePage(),
-
-    SettingPage(),
-  ];
+  @override
+  void dispose() {
+    lgService.disconnect(); // optional, clean shutdown
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +60,7 @@ class _FirstPageState extends State<FirstPage> {
         selectedIconTheme: IconThemeData(opacity: 1, size: 30),
         currentIndex: selectedIndex,
         backgroundColor: Color.fromARGB(255, 35, 35, 35),
-        onTap: navigationIndex,
+        onTap: (i) => setState(() => selectedIndex = i),
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home, color: Colors.white,),
