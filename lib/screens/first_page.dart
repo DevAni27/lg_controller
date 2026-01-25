@@ -1,6 +1,8 @@
 import 'package:demo_app/screens/home_page.dart';
 import 'package:demo_app/screens/setting_page.dart';
 import 'package:flutter/material.dart';
+import '../controllers/ssh_controller.dart';
+import '../controllers/settings_controller.dart';
 import '../services/lg_service.dart';
 
 class FirstPage extends StatefulWidget {
@@ -13,26 +15,20 @@ class FirstPage extends StatefulWidget {
 class _FirstPageState extends State<FirstPage> {
   
   int selectedIndex = 0;
+  final SettingsController controller = SettingsController();
+  final SshController sshController = SshController();
 
-  final LGService lgService = LGService();
 
-  late final List<Widget> _pages;
+  late final List<Widget Function()> _pageBuilders;
 
   @override
   void initState() {
     super.initState();
 
-    // ✅ Pass the SAME instance to both screens
-    _pages = [
-      HomePage(lgService: lgService),
-      SettingPage(lgService: lgService),
+    _pageBuilders = [
+      () => HomePage(sshController: sshController),
+      () => SettingPage(controller: controller, sshController: sshController),
     ];
-  }
-
-  @override
-  void dispose() {
-    lgService.disconnect(); // optional, clean shutdown
-    super.dispose();
   }
 
   @override
@@ -51,7 +47,7 @@ class _FirstPageState extends State<FirstPage> {
           ),
         ),
       ),
-      body: _pages[selectedIndex],
+      body: _pageBuilders[selectedIndex](),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.grey,

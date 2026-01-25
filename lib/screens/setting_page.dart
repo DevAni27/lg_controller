@@ -1,9 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-import '../services/lg_service.dart';
+import '../controllers/ssh_controller.dart';
+import '../controllers/settings_controller.dart';
 
 class SettingPage extends StatefulWidget {
-  final LGService lgService;
-  const SettingPage({super.key, required this.lgService});
+  final SettingsController controller;
+  final SshController sshController;
+  const SettingPage({super.key, required this.controller, required this.sshController});
 
   @override
   State<SettingPage> createState() => _SettingPageState();
@@ -18,45 +22,56 @@ class _SettingPageState extends State<SettingPage> {
   final _rigNumberController = TextEditingController(text: "3");
 
   
-  bool get connected => widget.lgService.isConnected;
+  bool get connected => widget.sshController.isConnected;
 
   Color get connectedColor => connected ? const Color.fromARGB(255, 91, 248, 96) : Colors.red;
   Text get connectedText => connected ? Text("Connected") : Text("Disconnected");
 
   void connect() async {
-    final host = _ipController.text.trim();
-    final port = int.parse(_portController.text.trim());
-    final user = _usernameController.text.trim();
-    final pass = _passwordController.text.trim();
-
-    final success = await widget.lgService.connect(
-      host: host,
-      port: port,
-      username: user,
-      password: pass,
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Connecting...')),
     );
 
-    if (success) {
-      final test = await widget.lgService.exec("hostname");
-      print("Connected to: $test");
-
-      setState(() {
-        connected;
-      });
-
+    try{
+      await widget.sshController.connect(_ipController.value.text, int.parse(_portController.value.text));
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Connected to LG successfully")),
+        const SnackBar(content: Text("Connected, authenticating...")),
       );
-    } else {
+      if(widget.sshController.connection != null){
+        try{
+          await widget.sshController.authenticate(_usernameController.value.text, _passwordController.value.text);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Authenticated successfully, Rig Connected!!")),
+          );
+          final res = await widget.sshController.runCommand("hostname");
+          print("Connected: $res");
+
+        }
+        catch(e){
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Authentication failed.")),
+          );
+        }
+      }
+    }
+    catch(e){
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Connection failed")),
+        const SnackBar(content: Text("Failed to connect")),
       );
     }
 
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
+    _usernameController.text = widget.controller.lgUsername ?? "";
+    _ipController.text = widget.controller.lgIp ?? "";
+    _portController.text = widget.controller.lgPort ?? "";
+    _passwordController.text = widget.controller.lgPassword ?? "";
+    _rigNumberController.text = widget.controller.lgRigsNum ?? "";
+
     return Scaffold(
       backgroundColor: Color(0xFF121212),
       body: Center(
@@ -90,6 +105,7 @@ class _SettingPageState extends State<SettingPage> {
               //Username
               TextField(
                 controller: _usernameController,
+                onChanged: widget.controller.updateLgUsername,
                 decoration: InputDecoration(
                   hintText: "Enter Username",
                   hintStyle: TextStyle(color: Colors.white70, fontWeight: FontWeight.w400),
@@ -107,6 +123,7 @@ class _SettingPageState extends State<SettingPage> {
               //ip address
               TextField(
                 controller: _ipController,
+                onChanged: widget.controller.updateLgIp,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   hintText: "IP Address",
@@ -124,6 +141,7 @@ class _SettingPageState extends State<SettingPage> {
               //Port number
               TextField(
                 controller: _portController,
+                onChanged: widget.controller.updateLgPort,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   hintText: "Port Number(22)",
@@ -141,6 +159,7 @@ class _SettingPageState extends State<SettingPage> {
               //password
               TextField(
                 controller: _passwordController,
+                onChanged: widget.controller.updateLgPassword,
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: "Enter Password",
@@ -158,6 +177,7 @@ class _SettingPageState extends State<SettingPage> {
               //number of rigs
               TextField(
                 controller: _rigNumberController,
+                onChanged: widget.controller.updateLgRigsNum,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   hintText: "Number of Rigs",
@@ -202,8 +222,7 @@ class _SettingPageState extends State<SettingPage> {
 
               ElevatedButton(
                 onPressed: () {
-                  widget.lgService.disconnect();
-                  setState(() {});
+                  widget.sshController.close();
                   
                 },
                 
