@@ -1,9 +1,11 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
-import '../services/lg_service.dart';
+import '../controllers/ssh_controller.dart';
 
 class HomePage extends StatefulWidget {
-  final LGService lgService;
-  const HomePage({super.key, required this.lgService});
+  final SshController sshController;
+  const HomePage({super.key, required this.sshController});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -14,9 +16,19 @@ class _HomePageState extends State<HomePage> {
   
   
 
-  void flyhome() async{
-    // add fly to home logic
- 
+  void flyhome() async {
+    print("path✅");
+
+    try {
+      final res = await widget.sshController.runCommand("""
+        echo "flytoview=<gx:duration>1.2</gx:duration><gx:flyToMode>smooth</gx:flyToMode><LookAt><longitude>73.8786</longitude><latitude>18.5246</latitude><range>8000</range><tilt>0</tilt><heading>0</heading><gx:altitudeMode>relativeToGround</gx:altitudeMode></LookAt>" > /tmp/query.txt
+        
+        """);
+      print(res);
+      
+    } catch (e) {
+      print("FlyHome error: $e");
+    }
   }
 
   @override
@@ -69,6 +81,7 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               onPressed: () {
                 // add function
+                
               },
               
               style: ElevatedButton.styleFrom(
