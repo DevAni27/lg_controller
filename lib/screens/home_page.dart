@@ -2,10 +2,15 @@
 
 import 'package:flutter/material.dart';
 import '../controllers/ssh_controller.dart';
+import '../controllers/settings_controller.dart';
+import '../controllers/home_controller.dart';
+import '../helpers/kml_helper.dart';
 
 class HomePage extends StatefulWidget {
   final SshController sshController;
-  const HomePage({super.key, required this.sshController});
+  final SettingsController settings;
+  final LgController lgController;
+  const HomePage({super.key, required this.sshController, required this.settings, required this.lgController});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -13,23 +18,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  
-  
-
-  void flyhome() async {
-    print("path✅");
-
-    try {
-      final res = await widget.sshController.runCommand("""
-        echo "flytoview=<gx:duration>1.2</gx:duration><gx:flyToMode>smooth</gx:flyToMode><LookAt><longitude>73.8786</longitude><latitude>18.5246</latitude><range>8000</range><tilt>0</tilt><heading>0</heading><gx:altitudeMode>relativeToGround</gx:altitudeMode></LookAt>" > /tmp/query.txt
-        
-        """);
-      print(res);
-      
-    } catch (e) {
-      print("FlyHome error: $e");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +31,15 @@ class _HomePageState extends State<HomePage> {
 
             //Fly to home button
             ElevatedButton(
-              onPressed: () {
-                flyhome();
+              onPressed: () async {
+                try{
+                  await widget.lgController.dispatchQuery(context, 'flytoview=${KmlHelper.orbitLookAtLinear(18.5246, 73.8786, 8000, 0, 0)}');
+                }
+                catch(e){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Failed to execute query"))
+                  );
+                }
               },
               
               style: ElevatedButton.styleFrom(
@@ -79,8 +74,9 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 20,),
             
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 // add function
+        
                 
               },
               

@@ -44,10 +44,10 @@ class LgController {
 
   Future<void> dispatchQuery(BuildContext context, String query) async {
     try {
-      String res = await sshController.runCommand(
-        "echo '$query' > /tmp/query.txt",
+      const target = "/tmp/query.txt";
+      final res = await sshController.runCommand(
+        "echo '$query' > $target",
       );
-      print(res);
       showSnackBar(
         context: context,
         message: 'Dispatching KML query',
