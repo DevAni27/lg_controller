@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../controllers/ssh_controller.dart';
 import '../controllers/settings_controller.dart';
 import '../services/lg_service.dart';
+import '../controllers/home_controller.dart';
 
 class FirstPage extends StatefulWidget {
   const FirstPage({super.key});
@@ -17,7 +18,7 @@ class _FirstPageState extends State<FirstPage> {
   int selectedIndex = 0;
   final SettingsController controller = SettingsController();
   final SshController sshController = SshController();
-
+  late final LgController lgController;
 
   late final List<Widget Function()> _pageBuilders;
 
@@ -25,8 +26,10 @@ class _FirstPageState extends State<FirstPage> {
   void initState() {
     super.initState();
 
+    lgController = LgController(sshController: sshController, settingsController: controller);
+
     _pageBuilders = [
-      () => HomePage(sshController: sshController),
+      () => HomePage(sshController: sshController, settings: controller, lgController: lgController),
       () => SettingPage(controller: controller, sshController: sshController),
     ];
   }
