@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               onPressed: () async {
                 try{
-                  await widget.lgController.dispatchQuery(context, 'flytoview=${KmlHelper.orbitLookAtLinear(18.5246, 73.8786, 8000, 0, 0)}');
+                  await widget.lgController.dispatchQuery(context, 'flytoview=${KmlHelper.orbitLookAtLinear(18.5246, 73.8786, 8000, 45, 0)}');
                 }
                 catch(e){
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -75,9 +75,15 @@ class _HomePageState extends State<HomePage> {
             
             ElevatedButton(
               onPressed: () async {
-                // add function
-        
-                
+                try{
+                  await widget.lgController.sendLogoToLeftScreen(context);
+
+                }
+                catch(e){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Failed to send logo"))
+                  );
+                }               
               },
               
               style: ElevatedButton.styleFrom(
@@ -102,8 +108,16 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 20,),
             
             ElevatedButton(
-              onPressed: () {
-                // add function
+              onPressed: () async {
+                try{
+                  // await widget.lgController.sendPyramid(context);
+                  
+                }
+                catch(e){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Failed to send Pyramid KML"))
+                  );
+                }
               },
               
               style: ElevatedButton.styleFrom(
@@ -126,8 +140,15 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 20,),
             //Clean logo
             ElevatedButton(
-              onPressed: () {
-                // add function
+              onPressed: () async {
+                try{
+                  await widget.lgController.cleanLogo(context);
+                }
+                catch(e){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Failed to clear logo"))
+                  );
+                }
               },
               
               style: ElevatedButton.styleFrom(
