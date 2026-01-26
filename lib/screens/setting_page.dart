@@ -76,9 +76,9 @@ class _SettingPageState extends State<SettingPage> {
       backgroundColor: Color(0xFF121212),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(14.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
           
               //connected status
@@ -217,6 +217,62 @@ class _SettingPageState extends State<SettingPage> {
                 ),
                              
               ),
+
+              Row(spacing: 10, mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                //relaunch 
+                ElevatedButton(
+                onPressed: () {
+                  // add function 
+                },
+
+                
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:  const Color.fromARGB(255, 21, 132, 222),
+                  padding: EdgeInsets.symmetric(vertical: 14, horizontal: 26),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))
+                  
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min, // Essential to prevent the Row from taking full width
+                  children: [
+                    Text("Relaunch LG", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),),
+                    // SizedBox(width: 14),
+                    // Icon(Icons.connected_tv, size: 30, color: Colors.white,), // The icon
+                    
+                     
+                  ],
+                ),
+                             
+              ),
+
+                //shutdown
+                ElevatedButton(
+                onPressed: () {
+                  // add function
+                },
+
+                
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:  const Color.fromARGB(255, 218, 131, 0),
+                  padding: EdgeInsets.symmetric(vertical: 14, horizontal: 26),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))
+                  
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min, // Essential to prevent the Row from taking full width
+                  children: [
+                    Text("Shutdown LG", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),),
+                    // SizedBox(width: 14),
+                    // Icon(Icons.connected_tv, size: 30, color: Colors.white,), // The icon
+                    
+                     
+                  ],
+                ),
+                             
+              ),
+
+              ],),
 
               //Disconnect button
 
