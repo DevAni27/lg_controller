@@ -30,7 +30,7 @@ class _FirstPageState extends State<FirstPage> {
 
     _pageBuilders = [
       () => HomePage(sshController: sshController, settings: controller, lgController: lgController),
-      () => SettingPage(controller: controller, sshController: sshController),
+      () => SettingPage(controller: controller, sshController: sshController, lgController: lgController),
     ];
   }
 
