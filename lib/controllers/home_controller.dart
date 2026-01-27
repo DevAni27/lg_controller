@@ -10,37 +10,55 @@ class LgController {
 
   LgController({required this.sshController, required this.settingsController});
 
-  Future<void> relaunchLg(BuildContext context) async {
-    try {
-      String res = await sshController.runCommand(
-        'lg-relaunch',
-      );
-      sshController.close();
-      showSnackBar(
-          context: context, message: 'Rebooting LGs', color: Colors.green);
-    } catch (e) {
-      showSnackBar(context: context, message: e.toString(), color: Colors.red);
-    }
-  }
+  Future<void> relaunchLG(BuildContext context) async {
+  try {
+    final cmd = '''
+echo '${settingsController.lgPassword}' | sudo -S systemctl restart lightdm
+''';
 
-  Future<void> rebootLg(BuildContext context) async {
-    try {
-      for (var i = int.parse(settingsController.lgRigsNum!); i >= 1; i--) {
-        try {
-          await sshController.runCommand(
-              'sshpass -p ${settingsController.lgPassword} ssh -t lg$i "echo ${settingsController.lgPassword} | sudo -S reboot"');
-        } catch (e) {
-          // ignore: avoid_print
-          print(e);
-        }
-      }
-      await sshController.close();
-      showSnackBar(
-          context: context, message: 'Rebooting LGs', color: Colors.green);
-    } catch (e) {
-      showSnackBar(context: context, message: e.toString(), color: Colors.red);
-    }
+    await sshController.runCommand(cmd);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Relaunching Liquid Galaxy…'),
+        backgroundColor: Colors.green,
+      ),
+    );
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Relaunch failed: $e'),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
+}
+
+Future<void> shutDownLG(BuildContext context) async {
+  try {
+    final cmd = '''
+echo '${settingsController.lgPassword}' | sudo -S shutdown -h now
+''';
+
+    await sshController.runCommand(cmd);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Shutting down Liquid Galaxy…'),
+        backgroundColor: Colors.red,
+      ),
+    );
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Shutdown failed: $e'),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+}
+
+
 
   Future<void> dispatchQuery(BuildContext context, String query) async {
     try {
@@ -145,6 +163,8 @@ Future<void> cleanLogo(BuildContext context) async {
     );
   }
 }
+
+
 
 
 

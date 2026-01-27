@@ -3,11 +3,13 @@
 import 'package:flutter/material.dart';
 import '../controllers/ssh_controller.dart';
 import '../controllers/settings_controller.dart';
+import '../controllers/home_controller.dart';
 
 class SettingPage extends StatefulWidget {
   final SettingsController controller;
   final SshController sshController;
-  const SettingPage({super.key, required this.controller, required this.sshController});
+  final LgController lgController;
+  const SettingPage({super.key, required this.controller, required this.sshController, required this.lgController});
 
   @override
   State<SettingPage> createState() => _SettingPageState();
@@ -61,6 +63,34 @@ class _SettingPageState extends State<SettingPage> {
     }
 
   }
+
+  Future<void> confirmShutdown(BuildContext context) async {
+  final confirm = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Shutdown Liquid Galaxy'),
+      content: const Text(
+        'This will power off all Liquid Galaxy machines.\n\nAre you sure?',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Shutdown'),
+        ),
+      ],
+    ),
+  );
+
+  if (confirm == true) {
+    await widget.lgController.shutDownLG(context);
+  }
+}
+
 
   
 
@@ -222,8 +252,16 @@ class _SettingPageState extends State<SettingPage> {
                 children: [
                 //relaunch 
                 ElevatedButton(
-                onPressed: () {
-                  // add function 
+                onPressed: () async {
+                  try{
+                    await widget.lgController.relaunchLG(context);
+                    
+                  }
+                  catch(e){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Failed to relaunch LG"))
+                    );
+                  }
                 },
 
                 
@@ -248,9 +286,7 @@ class _SettingPageState extends State<SettingPage> {
 
                 //shutdown
                 ElevatedButton(
-                onPressed: () {
-                  // add function
-                },
+                onPressed: () => confirmShutdown(context),
 
                 
                 style: ElevatedButton.styleFrom(
