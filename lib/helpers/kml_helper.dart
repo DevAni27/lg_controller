@@ -27,47 +27,114 @@ class KmlHelper {
   }
 
   static String pyramidKml({
-  required double lat,
-  required double lon,
-}) {
-  const d = 0.01;      // HUGE base (~1km)
-  const height = 3000; // 3 km tall
-  const baseAlt = 500; // float above ground
+    required double lat,
+    required double lon,
+  }) {
+    
+    const d = 0.003;      
+    const height = 1000;  
 
-  final p1 = "${lon - d},${lat - d},$baseAlt";
-  final p2 = "${lon + d},${lat - d},$baseAlt";
-  final p3 = "${lon + d},${lat + d},$baseAlt";
-  final p4 = "${lon - d},${lat + d},$baseAlt";
-  final apex = "$lon,$lat,${baseAlt + height}";
+    // Base corners
+    final p1 = "$lon,$lat,0";
+    final p2 = "${lon + d},$lat,0";
+    final p3 = "${lon + d},${lat + d},0";
+    final p4 = "$lon,${lat + d},0";
+    
+    //top of pyramid
+    final apex = "${lon + d/2},${lat + d/2},$height";
 
-  String tri(String a, String b, String c) => '''
-<Placemark>
-  <Style>
-    <PolyStyle><color>7f0000ff</color></PolyStyle>
-  </Style>
-  <Polygon>
-    <altitudeMode>absolute</altitudeMode>
-    <outerBoundaryIs><LinearRing><coordinates>
-      $a
-      $b
-      $c
-      $a
-    </coordinates></LinearRing></outerBoundaryIs>
-  </Polygon>
-</Placemark>
-''';
+    // helps to create a triangular face
+    String face(String a, String b, String c, String color) => '''
+  <Placemark>
+    <name>Pyramid Face</name>
+    <Style>
+      <LineStyle>
+        <color>ff000000</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>$color</color>
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+    </Style>
+    <Polygon>
+      <extrude>0</extrude>
+      <tessellate>0</tessellate>
+      <altitudeMode>relativeToGround</altitudeMode>
+      <outerBoundaryIs>
+        <LinearRing>
+          <coordinates>
+            $a $b $c $a
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>''';
 
-  return '''
-<kml xmlns="http://www.opengis.net/kml/2.2">
+    // Base (square on ground)
+    String base() => '''
+  <Placemark>
+    <name>Pyramid Base</name>
+    <Style>
+      <LineStyle>
+        <color>ff000000</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>990000ff</color>
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+    </Style>
+    <Polygon>
+      <extrude>0</extrude>
+      <tessellate>0</tessellate>
+      <altitudeMode>clampToGround</altitudeMode>
+      <outerBoundaryIs>
+        <LinearRing>
+          <coordinates>
+            $p1 $p2 $p3 $p4 $p1
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>''';
+
+    return '''<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
 <Document>
-  <name>DEBUG PYRAMID</name>
-  ${tri(p1, p2, apex)}
-  ${tri(p2, p3, apex)}
-  ${tri(p3, p4, apex)}
-  ${tri(p4, p1, apex)}
+  <name>3D Pyramid</name>
+  <description>A colorful 3D pyramid structure</description>
+  
+  <Style id="pyramidStyle">
+    <LineStyle>
+      <color>ff000000</color>
+      <width>2</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>99ff0000</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+
+  ${base()}
+  ${face(p1, p2, apex, '99ff0000')}
+  ${face(p2, p3, apex, '9900ff00')}
+  ${face(p3, p4, apex, '990000ff')}
+  ${face(p4, p1, apex, '99ffff00')}
+
+</Document>
+</kml>''';
+  }
+
+  static String getSlaveDefaultKml(int slaveNo) =>
+      '''<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document id="slave_$slaveNo">
 </Document>
 </kml>
 ''';
-}
 
 }

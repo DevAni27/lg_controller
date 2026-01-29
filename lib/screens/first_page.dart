@@ -3,7 +3,6 @@ import 'package:demo_app/screens/setting_page.dart';
 import 'package:flutter/material.dart';
 import '../controllers/ssh_controller.dart';
 import '../controllers/settings_controller.dart';
-import '../services/lg_service.dart';
 import '../controllers/home_controller.dart';
 
 class FirstPage extends StatefulWidget {

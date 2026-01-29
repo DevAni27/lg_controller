@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               onPressed: () async {
                 try{
-                  await widget.lgController.dispatchQuery(context, 'flytoview=${KmlHelper.orbitLookAtLinear(18.5246, 73.8786, 8000, 45, 0)}');
+                  await widget.lgController.dispatchQuery(context, 'flytoview=${KmlHelper.orbitLookAtLinear(18.5246, 73.8786, 7000, 45, 0)}');
                 }
                 catch(e){
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))
               ),
               child: const Row(
-                mainAxisSize: MainAxisSize.min, // Essential to prevent the Row from taking full width
+                mainAxisSize: MainAxisSize.min, 
                 children: [
                   Text("Fly to Home", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),),
                   SizedBox(width: 20),
@@ -110,8 +110,9 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               onPressed: () async {
                 try{
-                  // await widget.lgController.sendPyramid(context);
+                  await widget.lgController.sendPyramidKml();
                   
+    
                 }
                 catch(e){
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -142,7 +143,8 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               onPressed: () async {
                 try{
-                  await widget.lgController.cleanLogo(context);
+                  await widget.lgController.cleanLogo(context, int.parse(widget.settings.lgRigsNum!));
+                  
                 }
                 catch(e){
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -172,8 +174,17 @@ class _HomePageState extends State<HomePage> {
 
             //Clean KML
             ElevatedButton(
-              onPressed: () {
-                // add function
+              onPressed: () async {
+                try{
+                  await widget.lgController.cleanKml(context);
+                  
+                  
+                }
+                catch(e){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Failed to clear KML"))
+                  );
+                }
               },
               
               style: ElevatedButton.styleFrom(
