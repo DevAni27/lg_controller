@@ -272,11 +272,10 @@ class _SettingPageState extends State<SettingPage> {
                   
                 ),
                 child: const Row(
-                  mainAxisSize: MainAxisSize.min, // Essential to prevent the Row from taking full width
+                  mainAxisSize: MainAxisSize.min, 
                   children: [
                     Text("Relaunch LG", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),),
-                    // SizedBox(width: 14),
-                    // Icon(Icons.connected_tv, size: 30, color: Colors.white,), // The icon
+                    
                     
                      
                   ],
@@ -296,11 +295,10 @@ class _SettingPageState extends State<SettingPage> {
                   
                 ),
                 child: const Row(
-                  mainAxisSize: MainAxisSize.min, // Essential to prevent the Row from taking full width
+                  mainAxisSize: MainAxisSize.min, 
                   children: [
                     Text("Shutdown LG", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),),
-                    // SizedBox(width: 14),
-                    // Icon(Icons.connected_tv, size: 30, color: Colors.white,), // The icon
+                    
                     
                      
                   ],
