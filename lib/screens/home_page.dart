@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               onPressed: () async {
                 try{
-                  await widget.lgController.sendLogoToLeftScreen(context);
+                  await widget.lgController.sendLogoToLeftScreen(context, int.parse(widget.settings.lgRigsNum!));
 
                 }
                 catch(e){
