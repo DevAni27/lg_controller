@@ -78,7 +78,47 @@ echo '${settingsController.lgPassword}' | sudo -S shutdown -h now
     }
   }
 
-  Future<void> sendLogoToLeftScreen(BuildContext context) async {
+
+  Future<void> setRefreshForSlaves(BuildContext context) async {
+  try {
+    final rigs = int.tryParse(settingsController.lgRigsNum ?? "3") ?? 3;
+    final pass = settingsController.lgPassword;
+
+    
+    for (int i = 2; i <= rigs; i++) {
+      // Add refresh tags right after the href for that slave file
+      final search = '<href>##LG_PHPIFACE##kml\\/slave_$i.kml<\\/href>';
+      final replace =
+          '<href>##LG_PHPIFACE##kml\\/slave_$i.kml<\\/href>'
+          '<refreshMode>onInterval<\\/refreshMode>'
+          '<refreshInterval>2<\\/refreshInterval>';
+
+      final cmd = """
+sshpass -p '$pass' ssh -o StrictHostKeyChecking=no -t lg$i '
+  echo '$pass' | sudo -S sed -i "s/$replace/$search/g"  ~/earth/kml/slave/myplaces.kml;
+  echo '$pass' | sudo -S sed -i "s/$search/$replace/g"  ~/earth/kml/slave/myplaces.kml;
+'
+""";
+
+      await sshController.runCommand(cmd);
+    }
+
+    showSnackBar(
+      context: context,
+      message: "Refresh enabled on slaves (2s interval)",
+      color: Colors.green,
+    );
+  } catch (e) {
+    showSnackBar(
+      context: context,
+      message: "setRefresh failed: $e",
+      color: Colors.red,
+    );
+  }
+}
+
+
+  Future<void> sendLogoToLeftScreen(BuildContext context, int slaveNo) async {
     try {
       final rigCount = int.tryParse(settingsController.lgRigsNum ?? "3") ?? 3;
       final leftRig = (rigCount / 2).floor() + 2;
@@ -95,6 +135,8 @@ $kml
 EOF'
 """);
 
+      await setRefreshForSlaves(context);
+
       final verify = await sshController.runCommand("head -n 8 $leftSlaveKmlPath");
       
 
@@ -109,6 +151,9 @@ EOF'
       String res = await sshController.runCommand(
         "echo '${KmlHelper.getSlaveDefaultKml(slaveNo)}' > /var/www/html/kml/slave_$slaveNo.kml",
       );
+      
+      await setRefreshForSlaves(context);
+
       dispatchQuery(context, '');
       showSnackBar(
         context: context,
